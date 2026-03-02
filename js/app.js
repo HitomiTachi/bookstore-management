@@ -1,0 +1,121 @@
+/* =============================================
+   APP.JS - Logic chính trang chủ
+   =============================================
+   Render danh sách sách, xử lý filter & search
+   ⚠️  FILE DỄ CONFLICT khi thêm tính năng:
+   - Thêm kiểu sort mới
+   - Thêm filter mới
+   - Thay đổi cách render card
+   ============================================= */
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Khởi tạo
+    renderBooks(books);
+    updateCartCount();
+
+    // Event listeners cho filter & search
+    document.getElementById('search-input').addEventListener('input', applyFilters);
+    document.getElementById('category-filter').addEventListener('change', applyFilters);
+    document.getElementById('sort-select').addEventListener('change', applyFilters);
+});
+
+/**
+ * Áp dụng tất cả bộ lọc và render lại danh sách
+ */
+function applyFilters() {
+    const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+    const category = document.getElementById('category-filter').value;
+    const sortBy = document.getElementById('sort-select').value;
+
+    let filteredBooks = [...books];
+
+    // Lọc theo từ khóa tìm kiếm
+    if (searchTerm) {
+        filteredBooks = filteredBooks.filter(book =>
+            book.title.toLowerCase().includes(searchTerm) ||
+            book.author.toLowerCase().includes(searchTerm) ||
+            book.description.toLowerCase().includes(searchTerm)
+        );
+    }
+
+    // Lọc theo thể loại
+    if (category !== 'all') {
+        filteredBooks = filteredBooks.filter(book => book.category === category);
+    }
+
+    // Sắp xếp
+    switch (sortBy) {
+        case 'price-asc':
+            filteredBooks.sort((a, b) => a.price - b.price);
+            break;
+        case 'price-desc':
+            filteredBooks.sort((a, b) => b.price - a.price);
+            break;
+        case 'name-asc':
+            filteredBooks.sort((a, b) => a.title.localeCompare(b.title, 'vi'));
+            break;
+        default:
+            // Giữ thứ tự mặc định
+            break;
+    }
+
+    renderBooks(filteredBooks);
+}
+
+/**
+ * Render danh sách sách ra giao diện
+ * @param {Array} bookList - Mảng sách cần hiển thị
+ */
+function renderBooks(bookList) {
+    const bookGrid = document.getElementById('book-list');
+    const noResults = document.getElementById('no-results');
+
+    if (bookList.length === 0) {
+        bookGrid.innerHTML = '';
+        noResults.style.display = 'block';
+        return;
+    }
+
+    noResults.style.display = 'none';
+
+    // =============================================
+    // BOOK CARD TEMPLATE - Khu vực dễ CONFLICT
+    // Thay đổi layout card, thêm rating, thêm nút
+    // =============================================
+    bookGrid.innerHTML = bookList.map(book => `
+        <div class="book-card">
+            <a href="detail.html?id=${book.id}" class="book-cover">
+                ${book.emoji || '📖'}
+            </a>
+            <div class="book-info">
+                <span class="badge badge-${book.category}">${book.categoryName}</span>
+                <h3 class="book-title">
+                    <a href="detail.html?id=${book.id}">${book.title}</a>
+                </h3>
+                <p class="book-author">✍️ ${book.author}</p>
+                <p class="book-description">${book.description}</p>
+                <div class="book-footer">
+                    <span class="book-price">${formatPrice(book.price)}</span>
+                    <button class="btn btn-primary btn-small" onclick="addToCart(${book.id})">
+                        🛒 Thêm
+                    </button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+/**
+ * Format giá tiền theo định dạng Việt Nam
+ * ⚠️  Hàm này dễ CONFLICT - format giá khác nhau
+ * @param {number} price - Giá tiền
+ * @returns {string} Giá đã format
+ */
+function formatPrice(price) {
+    return price.toLocaleString('vi-VN') + 'đ';
+}
+
+// =============================================
+// 🔽 THÊM TÍNH NĂNG MỚI BÊN DƯỚI 🔽
+// Ví dụ: pagination, rating, wishlist
+// =============================================
