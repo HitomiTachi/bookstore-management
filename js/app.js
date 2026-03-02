@@ -14,9 +14,17 @@ document.addEventListener('DOMContentLoaded', function () {
     updateCartCount();
 
     // Event listeners cho filter & search
-    document.getElementById('search-input').addEventListener('input', applyFilters);
+    document.getElementById('search-input').addEventListener('input', function() {
+        applyFilters();
+        handleSearchInput();
+    });
     document.getElementById('category-filter').addEventListener('change', applyFilters);
+    document.getElementById('price-filter').addEventListener('change', applyFilters);
+    document.getElementById('rating-filter').addEventListener('change', applyFilters);
     document.getElementById('sort-select').addEventListener('change', applyFilters);
+
+    // Khởi tạo search enhancements
+    initSearchEnhancements();
 });
 
 /**
@@ -25,6 +33,8 @@ document.addEventListener('DOMContentLoaded', function () {
 function applyFilters() {
     const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
     const category = document.getElementById('category-filter').value;
+    const priceRange = document.getElementById('price-filter').value;
+    const minRating = document.getElementById('rating-filter').value;
     const sortBy = document.getElementById('sort-select').value;
 
     let filteredBooks = [...books];
@@ -43,6 +53,26 @@ function applyFilters() {
         filteredBooks = filteredBooks.filter(book => book.category === category);
     }
 
+    // Lọc theo khoảng giá
+    if (priceRange !== 'all') {
+        filteredBooks = filteredBooks.filter(book => {
+            const price = book.price / 1000;
+            switch (priceRange) {
+                case 'under-100': return price < 100;
+                case '100-200': return price >= 100 && price <= 200;
+                case 'over-200': return price > 200;
+                default: return true;
+            }
+        });
+    }
+
+    // Lọc theo rating
+    if (minRating !== 'all') {
+        filteredBooks = filteredBooks.filter(book =>
+            book.rating && book.rating >= parseFloat(minRating)
+        );
+    }
+
     // Sắp xếp
     switch (sortBy) {
         case 'price-asc':
@@ -54,8 +84,10 @@ function applyFilters() {
         case 'name-asc':
             filteredBooks.sort((a, b) => a.title.localeCompare(b.title, 'vi'));
             break;
+        case 'rating-desc':
+            filteredBooks.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+            break;
         default:
-            // Giữ thứ tự mặc định
             break;
     }
 
@@ -113,6 +145,80 @@ function renderBooks(bookList) {
  */
 function formatPrice(price) {
     return price.toLocaleString('vi-VN') + 'đ';
+}
+
+// =============================================
+// SEARCH ENHANCEMENTS - Clear & Autocomplete
+// =============================================
+
+function initSearchEnhancements() {
+    const searchClear = document.getElementById('search-clear');
+    const searchSuggestions = document.getElementById('search-suggestions');
+
+    // Xóa search khi click nút clear
+    searchClear.addEventListener('click', function() {
+        document.getElementById('search-input').value = '';
+        searchClear.style.display = 'none';
+        searchSuggestions.classList.remove('active');
+        applyFilters();
+    });
+
+    // Click vào suggestion
+    searchSuggestions.addEventListener('click', function(e) {
+        const li = e.target.closest('li');
+        if (li) {
+            const bookId = li.dataset.id;
+            window.location.href = `detail.html?id=${bookId}`;
+        }
+    });
+
+    // Ẩn suggestions khi click ra ngoài
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.search-wrapper')) {
+            searchSuggestions.classList.remove('active');
+        }
+    });
+}
+
+function handleSearchInput() {
+    const searchInput = document.getElementById('search-input');
+    const searchClear = document.getElementById('search-clear');
+    const query = searchInput.value;
+
+    // Hiện/ẩn nút clear
+    searchClear.style.display = query ? 'block' : 'none';
+
+    // Hiện autocomplete suggestions
+    showSuggestions(query);
+}
+
+function showSuggestions(query) {
+    const searchSuggestions = document.getElementById('search-suggestions');
+
+    if (!query.trim()) {
+        searchSuggestions.classList.remove('active');
+        return;
+    }
+
+    const matches = books.filter(book =>
+        book.title.toLowerCase().includes(query.toLowerCase()) ||
+        book.author.toLowerCase().includes(query.toLowerCase())
+    ).slice(0, 5);
+
+    if (matches.length === 0) {
+        searchSuggestions.classList.remove('active');
+        return;
+    }
+
+    searchSuggestions.innerHTML = matches.map(book => `
+        <li data-id="${book.id}">
+            <div class="suggestion-title">${book.emoji} ${book.title}</div>
+            <div class="suggestion-author">✍️ ${book.author}</div>
+            <div class="suggestion-price">${formatPrice(book.price)}</div>
+        </li>
+    `).join('');
+
+    searchSuggestions.classList.add('active');
 }
 
 // =============================================

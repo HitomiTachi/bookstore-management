@@ -138,6 +138,110 @@ ul {
     font-size: 1rem;
     background-color: white;
     cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+/* =============================================
+   SEARCH WRAPPER - Icon, Clear button, Autocomplete
+   ============================================= */
+.search-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.search-wrapper .search-input {
+    width: 100%;
+    padding-left: 40px;
+    padding-right: 35px;
+}
+
+.search-clear {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    color: #999;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+.search-clear:hover {
+    color: #e74c3c;
+}
+
+/* Autocomplete Suggestions */
+.search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 2px solid #667eea;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    max-height: 280px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.search-suggestions.active {
+    display: block;
+}
+
+.search-suggestions li {
+    padding: 12px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease;
+}
+
+.search-suggestions li:hover {
+    background-color: #f0f4ff;
+}
+
+.search-suggestions li:last-child {
+    border-bottom: none;
+    border-radius: 0 0 6px 6px;
+}
+
+.suggestion-title {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 2px;
+}
+
+.suggestion-author {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.suggestion-price {
+    font-size: 0.85rem;
+    color: #e74c3c;
+    font-weight: 500;
 }
 
 /* =============================================
