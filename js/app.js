@@ -10,13 +10,20 @@
 
 document.addEventListener('DOMContentLoaded', function () {
     // Khởi tạo
-    renderBooks(books);
+    renderCategoryChips();
     updateCartCount();
 
     // Event listeners cho filter & search
     document.getElementById('search-input').addEventListener('input', applyFilters);
     document.getElementById('category-filter').addEventListener('change', applyFilters);
     document.getElementById('sort-select').addEventListener('change', applyFilters);
+
+    const categoryList = document.getElementById('category-list');
+    if (categoryList) {
+        categoryList.addEventListener('click', onCategoryChipClick);
+    }
+
+    applyFilters();
 });
 
 /**
@@ -60,6 +67,8 @@ function applyFilters() {
     }
 
     renderBooks(filteredBooks);
+    setActiveCategoryChip(category);
+    updateCatalogSelection(category, filteredBooks.length);
 }
 
 /**
@@ -113,6 +122,88 @@ function renderBooks(bookList) {
  */
 function formatPrice(price) {
     return price.toLocaleString('vi-VN') + 'đ';
+}
+
+/**
+ * Render danh sách category chip từ options hiện có trong dropdown
+ */
+function renderCategoryChips() {
+    const categoryList = document.getElementById('category-list');
+    const categoryFilter = document.getElementById('category-filter');
+
+    if (!categoryList || !categoryFilter) {
+        return;
+    }
+
+    const categoryCounts = books.reduce((accumulator, book) => {
+        accumulator[book.category] = (accumulator[book.category] || 0) + 1;
+        return accumulator;
+    }, {});
+
+    const options = Array.from(categoryFilter.options).map(option => ({
+        value: option.value,
+        label: option.textContent.trim()
+    }));
+
+    categoryList.innerHTML = options.map(option => {
+        const count = option.value === 'all' ? books.length : (categoryCounts[option.value] || 0);
+
+        return `
+            <button type="button" class="category-chip" data-category="${option.value}">
+                ${option.label}
+                <span class="category-chip-count">${count}</span>
+            </button>
+        `;
+    }).join('');
+}
+
+/**
+ * Xử lý click vào category chip
+ * @param {MouseEvent} event - Sự kiện click
+ */
+function onCategoryChipClick(event) {
+    const categoryChip = event.target.closest('.category-chip');
+    if (!categoryChip) {
+        return;
+    }
+
+    const selectedCategory = categoryChip.dataset.category;
+    const categoryFilter = document.getElementById('category-filter');
+
+    if (!categoryFilter) {
+        return;
+    }
+
+    categoryFilter.value = selectedCategory;
+    applyFilters();
+}
+
+/**
+ * Đồng bộ trạng thái active cho category chip
+ * @param {string} category - Giá trị category đang được chọn
+ */
+function setActiveCategoryChip(category) {
+    const categoryChips = document.querySelectorAll('.category-chip');
+    categoryChips.forEach(chip => {
+        chip.classList.toggle('active', chip.dataset.category === category);
+    });
+}
+
+/**
+ * Cập nhật dòng mô tả danh mục đang xem
+ * @param {string} category - Giá trị category đang được chọn
+ * @param {number} resultCount - Số sách sau khi lọc
+ */
+function updateCatalogSelection(category, resultCount) {
+    const selectionElement = document.getElementById('catalog-selection');
+    if (!selectionElement) {
+        return;
+    }
+
+    const selectedOption = document.querySelector(`#category-filter option[value="${category}"]`);
+    const selectedLabel = selectedOption ? selectedOption.textContent.trim() : 'Tất cả thể loại';
+
+    selectionElement.textContent = `Đang xem: ${selectedLabel} (${resultCount} kết quả)`;
 }
 
 // =============================================
