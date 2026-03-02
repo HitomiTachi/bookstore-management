@@ -16,7 +16,8 @@ const books = [
         category: "programming",
         categoryName: "Lập trình",
         emoji: "💛",
-        description: "Cuốn sách kinh điển giúp bạn hiểu sâu về JavaScript, tập trung vào những phần tinh hoa nhất của ngôn ngữ."
+        description: "Cuốn sách kinh điển giúp bạn hiểu sâu về JavaScript, tập trung vào những phần tinh hoa nhất của ngôn ngữ.",
+        rating: 4.5
     },
     {
         id: 2,
@@ -26,7 +27,8 @@ const books = [
         category: "programming",
         categoryName: "Lập trình",
         emoji: "🧹",
-        description: "Hướng dẫn viết code sạch, dễ đọc và dễ bảo trì. Cuốn sách mọi lập trình viên nên đọc."
+        description: "Hướng dẫn viết code sạch, dễ đọc và dễ bảo trì. Cuốn sách mọi lập trình viên nên đọc.",
+        rating: 4.8
     },
     {
         id: 3,
@@ -36,7 +38,8 @@ const books = [
         category: "programming",
         categoryName: "Lập trình",
         emoji: "🐍",
-        description: "Nhập môn Python từ cơ bản đến nâng cao, kèm theo các dự án thực hành thú vị."
+        description: "Nhập môn Python từ cơ bản đến nâng cao, kèm theo các dự án thực hành thú vị.",
+        rating: 4.3
     },
 
     // ===== SÁCH KHOA HỌC =====
@@ -48,7 +51,8 @@ const books = [
         category: "science",
         categoryName: "Khoa học",
         emoji: "🕐",
-        description: "Cuốn sách kinh điển về vũ trụ học, từ Big Bang đến hố đen, được viết dễ hiểu cho mọi người."
+        description: "Cuốn sách kinh điển về vũ trụ học, từ Big Bang đến hố đen, được viết dễ hiểu cho mọi người.",
+        rating: 4.7
     },
     {
         id: 5,
@@ -58,7 +62,8 @@ const books = [
         category: "science",
         categoryName: "Khoa học",
         emoji: "🌍",
-        description: "Hành trình 70.000 năm của loài người từ thời kỳ đồ đá đến kỷ nguyên công nghệ."
+        description: "Hành trình 70.000 năm của loài người từ thời kỳ đồ đá đến kỷ nguyên công nghệ.",
+        rating: 4.9
     },
 
     // ===== SÁCH VĂN HỌC =====
@@ -70,7 +75,8 @@ const books = [
         category: "literature",
         categoryName: "Văn học",
         emoji: "✨",
-        description: "Câu chuyện về chàng chăn cừu Santiago và hành trình đi tìm kho báu, cũng là hành trình tìm kiếm ước mơ."
+        description: "Câu chuyện về chàng chăn cừu Santiago và hành trình đi tìm kho báu, cũng là hành trình tìm kiếm ước mơ.",
+        rating: 4.6
     },
     {
         id: 7,
@@ -80,7 +86,8 @@ const books = [
         category: "literature",
         categoryName: "Văn học",
         emoji: "🤝",
-        description: "Cuốn sách kinh điển về nghệ thuật giao tiếp và ứng xử, bán hơn 30 triệu bản trên toàn thế giới."
+        description: "Cuốn sách kinh điển về nghệ thuật giao tiếp và ứng xử, bán hơn 30 triệu bản trên toàn thế giới.",
+        rating: 4.4
     },
 
     // ===== SÁCH KINH DOANH =====
@@ -92,7 +99,8 @@ const books = [
         category: "business",
         categoryName: "Kinh doanh",
         emoji: "🚀",
-        description: "Phương pháp khởi nghiệp hiện đại, xây dựng sản phẩm nhanh, đo lường và học hỏi liên tục."
+        description: "Phương pháp khởi nghiệp hiện đại, xây dựng sản phẩm nhanh, đo lường và học hỏi liên tục.",
+        rating: 4.2
     },
 
     // ==============================================
